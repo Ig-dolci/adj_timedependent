@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<NEKTAR>
+    <EXPANSIONS>
+        <E COMPOSITE="C[150]" NUMMODES="8" FIELDS="u,v,p" TYPE="GLL_LAGRANGE" />
+    </EXPANSIONS>
+    
+    <FILTERS>
+        <FILTER TYPE="AeroForces">
+            <PARAM NAME="OutputFile">DragLiftap</PARAM>
+            <PARAM NAME="OutputFrequency">1</PARAM>
+            <PARAM NAME="Boundary"> B[0] </PARAM>
+        </FILTER> 
+    </FILTERS>
+
+    <CONDITIONS>
+        <SOLVERINFO>
+            <I PROPERTY="SOLVERTYPE"              VALUE="VelocityCorrectionScheme"/>
+            <I PROPERTY="EQTYPE"                  VALUE="UnsteadyNavierStokes"    />
+            <I PROPERTY="EvolutionOperator"       VALUE="Nonlinear"               />
+            <I PROPERTY="Projection"              VALUE="Continuous"              />
+            <I PROPERTY="TimeIntegrationMethod"   VALUE="IMEXOrder1"              />
+            <I PROPERTY="Driver"                  VALUE="Standard"                />
+            <I PROPERTY="GlobalSysSoln"           VALUE="XxtMultiLevelStaticCond" />
+        </SOLVERINFO>
+
+        <PARAMETERS>
+            <P> TimeStep        = 0.0005               </P>
+            <P> FinalTime       = 48                </P>
+            <P> NumSteps        = FinalTime/TimeStep   </P>
+            <P> IO_CheckSteps   = 0                </P>
+            <P> IO_InfoSteps    = 1000                 </P>
+            <P> IO_CFLSteps     = 1000                  </P>
+            <P> Re              = 100                  </P>
+            <P> Kinvis          = 1.0/Re               </P>
+            <P> A               = 1.0001                  </P>
+            <P> B               = 1.0                  </P>
+            <P> freq            = PI_2                  </P>
+        </PARAMETERS>
+    
+        <VARIABLES>
+            <V ID="0"> u </V> 
+            <V ID="1"> v </V> 
+            <V ID="2"> p </V> 
+        </VARIABLES>
+
+        <BOUNDARYREGIONS>
+            <B ID="0"> C[100] </B> <!-- Wall     -->
+            <B ID="1"> C[101] </B> <!-- Symmetry -->
+            <B ID="2"> C[102] </B> <!-- Inlet    -->
+            <B ID="3"> C[103] </B> <!-- Outlet   -->
+        </BOUNDARYREGIONS>
+
+        <BOUNDARYCONDITIONS>
+            <REGION REF="0">
+                <D VAR="u" VALUE="0" />
+                <D VAR="v" VALUE="0" />
+                <N VAR="p" USERDEFINEDTYPE="H" VALUE="0"/>  
+            </REGION>
+            <REGION REF="1">
+                <D VAR="u" VALUE="1+A*sin(B*freq*t)/10" />
+                <D VAR="v" VALUE="0" />
+                <N VAR="p" USERDEFINEDTYPE="H" VALUE="0" />
+            </REGION>      
+            <REGION REF="2">
+                <D VAR="u" VALUE="1+A*sin(B*freq*t)/10" />
+                <D VAR="v" VALUE="0" />
+                <N VAR="p" USERDEFINEDTYPE="H" VALUE="0" />
+            </REGION>
+            <REGION REF="3">
+                <N VAR="u" VALUE="0" />
+                <N VAR="v" VALUE="0" />
+                <D VAR="p" VALUE="0" />  
+            </REGION>
+        </BOUNDARYCONDITIONS>
+
+        <FUNCTION NAME="InitialConditions">
+            <!--<E VAR="u" VALUE="A" />
+            <E VAR="v" VALUE="0" />
+            <E VAR="p" VALUE="0" />-->
+            <F FILE="cylinder_mesh_baserst.chk" />
+        </FUNCTION>
+        
+        <FUNCTION NAME="Acceleration">
+            <E VAR="u" VALUE="A*cos(B*freq*t)*B*freq/10" />
+            <E VAR="v" VALUE="0" />
+            <E VAR="p" VALUE="0" />
+        </FUNCTION>
+    </CONDITIONS>        
+</NEKTAR>
