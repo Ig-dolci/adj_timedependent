@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<NEKTAR>
+    <EXPANSIONS>
+        <E COMPOSITE="C[10]" NUMMODES="8" FIELDS="u,v,p" TYPE="GLL_LAGRANGE" />
+    </EXPANSIONS>
+    <FILTERS>
+        <FILTER TYPE="Energy">
+            <PARAM NAME="OutputFile">DragLiftam</PARAM>
+            <PARAM NAME="OutputFrequency">1</PARAM>
+        </FILTER>
+        <!--<FILTER TYPE="Checkpoint">
+            <PARAM NAME="OutputFile">cavity_mesh</PARAM>
+            <PARAM NAME="OutputFrequency">1</PARAM>
+        </FILTER>
+        <FILTER TYPE="HistoryPoints">
+            <PARAM NAME="OutputFile">V4</PARAM>
+            <PARAM NAME="OutputFrequency">1</PARAM>
+            <PARAM NAME="Points">
+                -1 0.0 0
+            </PARAM>
+        </FILTER> -->
+
+    </FILTERS>
+    <CONDITIONS>
+         <SOLVERINFO>
+            <I PROPERTY="SolverType"            VALUE="VelocityCorrectionScheme"   />
+            <I PROPERTY="EqType"                VALUE="UnsteadyNavierStokes"       />
+            <I PROPERTY="EvolutionOperator"     VALUE="Nonlinear"                  />
+     <!--   <I PROPERTY="AdvectionForm"         VALUE="Convective"                 /> -->
+            <I PROPERTY="Projection"            VALUE="Galerkin"                 />
+            <I PROPERTY="TimeIntegrationMethod" VALUE="IMEXOrder1"                 />
+            <I PROPERTY="Driver"                VALUE="Standard"                   /> 
+     <!--   <I PROPERTY="Homogeneous"           VALUE="1D"                         /> -->
+     <!--   <I PROPERTY="UseFFT"                VALUE="FFTW"                       /> -->
+            <I PROPERTY="GlobalSysSoln"         VALUE="XxtMultiLevelStaticCond" />
+     <!--   <I PROPERTY="SpectralHPDealiasing" 	VALUE="True"                 />  -->
+     <!--   <I PROPERTY="SpectralVanishingViscosity"         VALUE="True"          /> -->
+        </SOLVERINFO>
+
+         <PARAMETERS>
+            <P> TimeStep        = 0.0001                </P>
+            <P> FinalTime       = 24                 </P>
+            <P> NumSteps        = FinalTime/TimeStep   </P>
+            <P> IO_CheckSteps   = 0                  </P>
+            <P> IO_InfoSteps    = 1000                  </P>
+            <P> IO_CFLSteps     = 1000                  </P>
+            <P> Re              = 4000                  </P>
+            <P> Kinvis          = 1.0/Re                 </P>
+            <P> freq            = PI_2                  </P>
+            <P> A               = 0.9999                  </P>
+            <P> B               = 1.0           </P>
+        </PARAMETERS>
+       
+        <VARIABLES>
+            <V ID="0"> u </V>
+            <V ID="1"> v </V>
+            <V ID="2"> p </V>
+        </VARIABLES>
+
+   <!--     <GLOBALSYSSOLNINFO>
+            <V VAR="u,v">
+                <I PROPERTY="GlobalSysSoln"
+                VALUE="IterativeStaticCond" />
+                <I PROPERTY="Preconditioner"
+                VALUE="LowEnergyBlock"/>
+                <I PROPERTY="IterativeSolverTolerance" VALUE="1e-8"/>
+            </V>
+            <V VAR="p">
+                <I PROPERTY="GlobalSysSoln"
+                VALUE="IterativeStaticCond" />
+                <I PROPERTY="Preconditioner"
+                VALUE="FullLinearSpaceWithLowEnergyBlock"/>
+                <I PROPERTY="IterativeSolverTolerance" VALUE="1e-6"/>
+            </V>
+        </GLOBALSYSSOLNINFO> -->
+
+        <BOUNDARYREGIONS>
+            <B ID="0"> C[0] </B> <!-- wall     -->
+            <B ID="1"> C[1] </B> <!-- inlet    -->
+        </BOUNDARYREGIONS>
+
+        <BOUNDARYCONDITIONS>
+            <REGION REF="0">
+                <D VAR="u" VALUE="0" />
+                <D VAR="v" VALUE="0" />
+                <N VAR="p" USERDEFINEDTYPE="H" VALUE="0" />
+            </REGION>
+            <REGION REF="1">
+                <D VAR="u" USERDEFINEDTYPE="TimeDependent" VALUE="(1-(2*x-1)*(2*x-1))*(1-(2*x-1)*(2*x-1))*A*sin(B*freq*t)" />
+                <D VAR="v" VALUE="0" />
+                <N VAR="p" USERDEFINEDTYPE="H" VALUE="0" />
+            </REGION>
+        </BOUNDARYCONDITIONS>
+
+        <FUNCTION NAME="InitialConditions">
+            <!--<E VAR="u" VALUE="0" />
+            <E VAR="v" VALUE="0" />
+            <E VAR="p" VALUE="0" />-->
+            <F FILE="cavity_mesh_baserst.chk" />
+        </FUNCTION>
+        
+        <ACCELERATION>
+            <REGION REF="1">
+                <A VAR="u" VALUE="(1-(2*x-1)*(2*x-1))*(1-(2*x-1)*(2*x-1))*A*cos(B*freq*t)*B*freq" />
+                <A VAR="v" VALUE="0" />
+                <A VAR="p" VALUE="0" />
+            </REGION>
+        </ACCELERATION>
+        
+    </CONDITIONS>
+</NEKTAR>
+

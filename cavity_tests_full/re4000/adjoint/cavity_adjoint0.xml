@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<NEKTAR>
+    <EXPANSIONS>
+        <E COMPOSITE="C[10]" NUMMODES="8" FIELDS="u,v,p" TYPE="GLL_LAGRANGE" />
+    </EXPANSIONS>
+    <FILTERS>
+        <FILTER TYPE="AdjointGrad">
+            <PARAM NAME="OutputFile">adjgrad</PARAM>
+            <PARAM NAME="OutputFrequency">1</PARAM>
+            <PARAM NAME="Boundary"> B[1] </PARAM>
+            <PARAM NAME="Case"> cavity </PARAM>
+        </FILTER>
+        <!--<FILTER TYPE="Checkpoint">
+            <PARAM NAME="OutputFile">cavity_adj_ss</PARAM>
+            <PARAM NAME="OutputFrequency">1000</PARAM>
+        </FILTER>
+        <FILTER TYPE="AeroForces">
+            <PARAM NAME="OutputFile">DragLiftadjforces0</PARAM>
+            <PARAM NAME="OutputFrequency">1</PARAM>
+            <PARAM NAME="Boundary"> B[0] </PARAM>
+        </FILTER>
+        <FILTER TYPE="FieldConvert">
+            <PARAM NAME="OutputFile">snake_adjinlet.fld</PARAM>
+            <PARAM NAME="OutputFrequency">100</PARAM>
+            <PARAM NAME="Modules">gradient</PARAM>
+        </FILTER>-->
+
+    </FILTERS>
+    <CONDITIONS>
+         <SOLVERINFO>
+            <I PROPERTY="SolverType"            VALUE="VelocityCorrectionScheme"   />
+            <I PROPERTY="EqType"                VALUE="UnsteadyNavierStokes"       />
+            <I PROPERTY="EvolutionOperator"     VALUE="Adjoint"                    />
+     <!--   <I PROPERTY="AdvectionForm"         VALUE="Convective"                 /> -->
+            <I PROPERTY="Projection"            VALUE="Galerkin"                 />
+            <I PROPERTY="TimeIntegrationMethod" VALUE="IMEXOrder1"                 />
+            <I PROPERTY="Driver"                VALUE="Standard"                   /> 
+     <!--   <I PROPERTY="Homogeneous"           VALUE="1D"                         /> -->
+     <!--   <I PROPERTY="UseFFT"                VALUE="FFTW"                       /> -->
+            <I PROPERTY="GlobalSysSoln"         VALUE="XxtMultiLevelStaticCond" />
+     <!--   <I PROPERTY="SpectralHPDealiasing" 	VALUE="True"                       /> -->
+     <!--   <I PROPERTY="SpectralVanishingViscosity"         VALUE="True"          /> -->
+        </SOLVERINFO>
+
+         <PARAMETERS>
+            <P> TimeStep        = 0.0001         </P>
+            <P> FinalTime       = 4*6                 </P>
+            <P> NumSteps        = FinalTime/TimeStep   </P>
+            <P> IO_CheckSteps   = 0                    </P>
+            <P> IO_InfoSteps    = 1000                  </P>
+            <P> IO_CFLSteps     = 1000                  </P>
+            <P> Re              = 4000                  </P>
+            <P> Kinvis          = 1.0/Re                 </P>
+            <P> freq            = PI_2                  </P>
+            <P> period            = 4                  </P>
+            <P> adjperiod            = 24                  </P>
+            <P> A               = 1.0                  </P>
+            <P> B               = 1.0           </P>
+            <P> h               = 0.25           </P>
+            <P> BaseFlow_interporder        = 2                 </P>
+            <P> N_skip         = 1                </P>
+            <P> N_slices         = 4001                 </P>
+        </PARAMETERS>
+       
+        <VARIABLES>
+            <V ID="0"> u </V>
+            <V ID="1"> v </V>
+            <V ID="2"> p </V>
+        </VARIABLES>
+
+        <BOUNDARYREGIONS>
+            <B ID="0"> C[0] </B> <!-- right wall     -->
+            <B ID="1"> C[1] </B> <!-- inlet    -->
+        </BOUNDARYREGIONS>
+
+        <BOUNDARYCONDITIONS>
+            <REGION REF="0">
+                <D VAR="u" VALUE="0" />
+                <D VAR="v" VALUE="0" />
+                <N VAR="p" USERDEFINEDTYPE="H" VALUE="0" />
+            </REGION>
+            <REGION REF="1">
+                <D VAR="u" VALUE="0" />
+                <D VAR="v" VALUE="0" />
+                <N VAR="p" USERDEFINEDTYPE="H" VALUE="0" />
+            </REGION>
+        </BOUNDARYCONDITIONS>
+
+        <FUNCTION NAME="InitialConditions">
+            <E VAR="u" VALUE="0" />
+            <E VAR="v" VALUE="0" />
+            <E VAR="p" VALUE="0" />
+            <!--<F FILE="cavity_rst_adj.chk" />-->
+        </FUNCTION>
+
+        <FUNCTION NAME="BaseFlow">
+            <F VAR="u,v,p" FILE="cavity_nonlinear_%d.chk" />
+        </FUNCTION>
+
+    </CONDITIONS>
+    
+    <FORCING>
+        <FORCE TYPE="BaseFlow">
+        </FORCE>
+    </FORCING>
+</NEKTAR>
+
