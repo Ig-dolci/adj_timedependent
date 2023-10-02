@@ -2,7 +2,7 @@
 
 <NEKTAR>
     <EXPANSIONS>
-        <E COMPOSITE="C[10]" NUMMODES="8" FIELDS="u,v,p" TYPE="GLL_LAGRANGE" />
+        <E COMPOSITE="C[15]" NUMMODES="4" FIELDS="u,v,p" TYPE="GLL_LAGRANGE" />
     </EXPANSIONS>
     <FILTERS>
         <FILTER TYPE="Energy">
@@ -39,7 +39,7 @@
         </SOLVERINFO>
 
          <PARAMETERS>
-            <P> TimeStep        = 0.0001                </P>
+            <P> TimeStep        = 0.001                </P>
             <P> FinalTime       = 24                 </P>
             <P> NumSteps        = FinalTime/TimeStep   </P>
             <P> IO_CheckSteps   = 0                  </P>
@@ -76,8 +76,8 @@
         </GLOBALSYSSOLNINFO> -->
 
         <BOUNDARYREGIONS>
-            <B ID="0"> C[0] </B> <!-- wall     -->
-            <B ID="1"> C[1] </B> <!-- inlet    -->
+            <B ID="0"> C[13] </B> <!-- wall     -->
+            <B ID="1"> C[14] </B> <!-- inlet    -->
         </BOUNDARYREGIONS>
 
         <BOUNDARYCONDITIONS>

@@ -2,7 +2,7 @@
 
 <NEKTAR>
     <EXPANSIONS>
-        <E COMPOSITE="C[10]" NUMMODES="8" FIELDS="u,v,p" TYPE="GLL_LAGRANGE" />
+        <E COMPOSITE="C[15]" NUMMODES="6" FIELDS="u,v,p" TYPE="GLL_LAGRANGE" />
     </EXPANSIONS>
     <FILTERS>
         <FILTER TYPE="Energy">
@@ -29,17 +29,17 @@
             <I PROPERTY="EvolutionOperator"     VALUE="Nonlinear"                  />
      <!--   <I PROPERTY="AdvectionForm"         VALUE="Convective"                 /> -->
             <I PROPERTY="Projection"            VALUE="Galerkin"                 />
-            <I PROPERTY="TimeIntegrationMethod" VALUE="IMEXOrder1"                 />
+            <I PROPERTY="TimeIntegrationMethod" VALUE="IMEXOrder2"                 />
             <I PROPERTY="Driver"                VALUE="Standard"                   /> 
      <!--   <I PROPERTY="Homogeneous"           VALUE="1D"                         /> -->
      <!--   <I PROPERTY="UseFFT"                VALUE="FFTW"                       /> -->
-            <I PROPERTY="GlobalSysSoln"         VALUE="XxtMultiLevelStaticCond" />
+            <!-- <I PROPERTY="GlobalSysSoln"         VALUE="XxtMultiLevelStaticCond" /> -->
      <!--   <I PROPERTY="SpectralHPDealiasing" 	VALUE="True"                 />  -->
      <!--   <I PROPERTY="SpectralVanishingViscosity"         VALUE="True"          /> -->
         </SOLVERINFO>
 
          <PARAMETERS>
-            <P> TimeStep        = 0.0001                </P>
+            <P> TimeStep        = 0.002                </P>
             <P> FinalTime       = 1*100                 </P>
             <P> NumSteps        = FinalTime/TimeStep   </P>
             <P> IO_CheckSteps   = 0                  </P>
@@ -76,8 +76,8 @@
         </GLOBALSYSSOLNINFO> -->
 
         <BOUNDARYREGIONS>
-            <B ID="0"> C[0] </B> <!-- wall     -->
-            <B ID="1"> C[1] </B> <!-- inlet    -->
+            <B ID="0"> C[13] </B> <!-- wall     -->
+            <B ID="1"> C[14] </B> <!-- inlet    -->
         </BOUNDARYREGIONS>
 
         <BOUNDARYCONDITIONS>

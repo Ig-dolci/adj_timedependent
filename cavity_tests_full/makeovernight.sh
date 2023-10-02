@@ -22,7 +22,7 @@ mpirun -np 6 $MEK/IncNavierStokesSolver ${case}_mesh.xml ${case}_nonlinear_tan_w
 
 j=0;
 
-while [  $j -le "4000" ]; do
+while [  $j -le "400" ]; do
 
 echo $j
 aux=$(bc <<< "4000 - $j")

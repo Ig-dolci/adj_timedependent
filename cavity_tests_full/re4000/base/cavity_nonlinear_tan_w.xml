@@ -39,7 +39,7 @@
         </SOLVERINFO>
 
          <PARAMETERS>
-            <P> TimeStep        = 0.0001                </P>
+            <P> TimeStep        = 0.001                </P>
             <P> FinalTime       = 24                 </P>
             <P> NumSteps        = FinalTime/TimeStep   </P>
             <P> IO_CheckSteps   = 0                  </P>
